@@ -1,4 +1,5 @@
-import bcrypt
+# --- HASHING FUNCTIONS (hash_password, verify_password) ARE REMOVED ---
+# --- BCRYPT IMPORT IS REMOVED ---
 from typing import Optional
 from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status
@@ -9,23 +10,11 @@ from .config import get_settings
 from .db_conf import get_session
 from ..models import UserModel
 from ..schemas.TokenSchema import TokenData
+from ..services.UserService import get_user_by_username
 
 
 SETTINGS = get_settings()
-OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl="/users/token")
-
-
-def hash_password(password: str) -> str:
-    password_bytes = password.encode("utf-8")
-    return bcrypt.hashpw(
-        password_bytes, bcrypt.gensalt(rounds=SETTINGS.SALT_ROUNDS)
-    ).decode("utf-8")
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    password_bytes = plain_password.encode("utf-8")
-    hashed_bytes = hashed_password.encode("utf-8")
-    return bcrypt.checkpw(password_bytes, hashed_bytes)
+OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl="users/token")
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -61,10 +50,11 @@ async def get_current_user(
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    # user = await get_user_by_username(session, username=token_data.username)
-    # if user is None:
-    #     raise credentials_exception
-    # return user
+
+    user = await get_user_by_username(session, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
 
 
 async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):

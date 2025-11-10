@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from ..models import UserModel
 from ..schemas.UserSchema import UserCreate, UserUpdate, User
-from ..helpers.security import hash_password, verify_password
+from ..helpers.hash import hash_password, verify_password
 
 
 async def create_user(session: AsyncSession, user: UserCreate) -> User:

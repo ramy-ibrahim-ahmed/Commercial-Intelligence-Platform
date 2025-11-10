@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .helpers.db_conf import ENGINE, ORM_BASE
 from .routes import user_router, car_router, order_router
@@ -22,6 +23,14 @@ app = FastAPI(
 app.include_router(user_router)
 app.include_router(car_router)
 app.include_router(order_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", tags=["Root"])
