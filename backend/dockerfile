@@ -3,5 +3,5 @@ WORKDIR /app
 RUN pip install uv
 COPY ./pyproject.toml ./uv.lock* ./
 RUN uv sync --frozen --no-dev
-COPY . /app/server
-CMD ["uv", "run", "python", "-m", "server.main"]
+COPY . /app/backend
+CMD ["uv", "run", "python", "-m", "backend.main"]

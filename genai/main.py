@@ -32,7 +32,7 @@ app = FastAPI(
     title="Syara",
     version="0.1.0",
     openapi_url="/openapi.json",
-    root_path="/api/ai",
+    root_path="/api/genai",
 )
 
 app.add_middleware(

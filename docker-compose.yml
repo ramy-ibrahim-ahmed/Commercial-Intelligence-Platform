@@ -1,20 +1,20 @@
 services:
-  server:
+  backend:
     build:
-      context: ./server
+      context: ./backend
     env_file:
-      - ./server/.env
+      - ./backend/.env
     restart: unless-stopped
     depends_on:
       qdrant:
         condition: service_started
       postgres:
         condition: service_healthy
-  ai:
+  genai:
     build:
-      context: ./ai
+      context: ./genai
     env_file:
-      - ./ai/.env
+      - ./genai/.env
     restart: unless-stopped
     depends_on:
       - qdrant
@@ -28,8 +28,8 @@ services:
     depends_on:
       - qdrant
       - postgres
-      - server
-      - ai
+      - backend
+      - genai
     restart: unless-stopped
   qdrant:
     image: qdrant/qdrant:latest
@@ -43,7 +43,7 @@ services:
     image: postgres:latest
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - ./backend/.env
     ports:
       - "5433:5432"
     volumes:
