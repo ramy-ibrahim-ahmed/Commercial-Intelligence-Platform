@@ -5,6 +5,8 @@ services:
     env_file:
       - ./backend/.env
     restart: unless-stopped
+    deploy:
+      replicas: 4
     depends_on:
       qdrant:
         condition: service_started
@@ -49,7 +51,7 @@ services:
     volumes:
       - ./assets/postgres_data:/var/lib/postgresql/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 10
